@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogViewHolder> {
-    private ArrayList<String> logsList;
+    private ArrayList<LogModel> logsList;
 
-    public LogsAdapter(ArrayList<String> logsList) {
+    public LogsAdapter(ArrayList<LogModel> logsList) {
         this.logsList = logsList;
     }
 
@@ -24,8 +24,8 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull LogViewHolder holder, int position) {
-        String logText = logsList.get(position);
-        holder.textViewLog.setText(logText);
+        LogModel log = logsList.get(position);
+        holder.bind(log);
     }
 
     @Override
@@ -39,6 +39,10 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogViewHolder>
         public LogViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewLog = itemView.findViewById(R.id.textViewLog);
+        }
+
+        public void bind(LogModel log) {
+            textViewLog.setText("Distance: " + log.getDistance() + ", Location: " + log.getLocation() + ", Steps: " + log.getSteps());
         }
     }
 }
