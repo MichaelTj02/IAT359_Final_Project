@@ -1,6 +1,10 @@
 package com.example.iat359_final_project;
 
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,7 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Sensor gyroscope;
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
         Button btnCheckLogs = findViewById(R.id.btnCheckLogs);
         Button btnViewMap = findViewById(R.id.btnViewMap);
         Button btnStartSession = findViewById(R.id.btnStartSession);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        }
 
         btnCheckLogs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
         btnViewMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle click to view map
-                // Implement this functionality when the map activity is implemented
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(intent);
+
             }
         });
 
@@ -42,5 +59,44 @@ public class MainActivity extends AppCompatActivity {
                 // This might involve starting a service or background operation
             }
         });
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor == accelerometer) {
+            // Handle accelerometer data
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            // Process accelerometer data for step detection
+        } else if (event.sensor == gyroscope) {
+            // Handle gyroscope data
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            // Process gyroscope data for step detection
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (accelerometer != null && gyroscope != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (accelerometer != null && gyroscope != null) {
+            sensorManager.unregisterListener(this);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }
