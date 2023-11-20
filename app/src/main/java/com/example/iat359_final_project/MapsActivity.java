@@ -33,7 +33,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-        checkLocationPermission();
+        //checkLocationPermission();
     }
 
     private void checkLocationPermission() {
