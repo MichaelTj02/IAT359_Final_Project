@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         // Calculate current steps since the button was pressed
                         int currentSteps = (int) event.values[0] - stepOffset;
                         stepCounterTextView.setText("Steps: " + currentSteps);
+                        totalSteps = currentSteps;
                     }
                 }
             }
@@ -212,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private int getCurrentSteps() {
-        return finalTotalSteps;
+        return totalSteps;
     }
 
     private void finishSession() {
@@ -231,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void resetSteps() {
+        totalSteps = 0;
         finalTotalSteps = 0;
     }
 
