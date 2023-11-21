@@ -30,7 +30,8 @@
         android:text="Start Session"
         android:layout_below="@id/btnViewMap"
         android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="startSession" />
 
     <LinearLayout
         android:layout_width="match_parent"
