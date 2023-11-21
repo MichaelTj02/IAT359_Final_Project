@@ -38,7 +38,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".ViewLogsActivity"/>
         <activity android:name=".MapsActivity"/>
-
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA7UvBqYWX2OQdhYu1CeHvWmj_gIVWeX3s" />
