@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textViewLog"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:padding="17dp"
-    android:textSize="16sp"/>
+    android:layout_height="wrap_content"
+    android:id="@+id/listLayout">
+
+    <TextView
+        android:id="@+id/locationEntry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:text="New Text"
+        android:textSize="24sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/stepsEntry"
+        android:textSize="24sp"
+        android:layout_weight="1" />
+</LinearLayout>

@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             System.out.println(totalSteps);
 
-            // Update your UI or logic with the total steps
+            // Update UI
             updateStepCountDisplay(totalSteps);
         }
     }
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // Save to database
 //            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(Va));
             String location = "Vancouver";
-            db.insertLog(location, totalSteps);
+            db.insertData("Vancouver", String.valueOf(totalSteps));
 
             sensorManager.unregisterListener(stepListener);
             stepCounterTextView.setText("Session finished. Steps: " + totalSteps);
