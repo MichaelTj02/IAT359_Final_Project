@@ -42,7 +42,7 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogViewHolder>
         }
 
         public void bind(LogModel log) {
-            textViewLog.setText("Distance: " + log.getDistance() + ", Location: " + log.getLocation() + ", Steps: " + log.getSteps());
+            textViewLog.setText("Location: " + log.getLocation() + ", Steps: " + log.getSteps());
         }
     }
 }

@@ -19,6 +19,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -31,7 +33,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorEventListener stepListener;
     private TextView stepCounterTextView;
     private boolean isCounterStarted = false;
+    private int totalSteps;
     private int stepOffset = 0;
+
+    private Database db;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +45,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button btnCheckLogs = findViewById(R.id.btnCheckLogs);
         Button btnViewMap = findViewById(R.id.btnViewMap);
         Button btnStartSession = findViewById(R.id.btnStartSession);
+        Button btnFinishSession = findViewById(R.id.btnFinishSession);
 
         stepCounterTextView = (TextView) findViewById(R.id.stepCounterText);
+
+        db = new Database(this);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
@@ -50,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         }
 
-        btnCheckLogs.setOnClickListener(new View.OnClickListener() {
+        btnCheckLogs.setOnClickListener(new View.OnClickListener() { // set check log button onClick
             @Override
             public void onClick(View v) {
                 // Handle click to check logs
@@ -58,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        btnViewMap.setOnClickListener(new View.OnClickListener() {
+        btnViewMap.setOnClickListener(new View.OnClickListener() { // set map button onClick
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        btnStartSession.setOnClickListener(new View.OnClickListener() {
+        btnStartSession.setOnClickListener(new View.OnClickListener() { // set start session onClick
             @Override
             public void onClick(View v) {
                 if (!isCounterStarted) {
@@ -77,7 +85,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        stepListener = new SensorEventListener() {
+        btnFinishSession.setOnClickListener(new View.OnClickListener() { // set finish session onClick
+            @Override
+            public void onClick(View v) {
+                finishSession();
+            }
+        });
+
+        stepListener = new SensorEventListener() { // step counter sensor listener
             @Override
             public void onSensorChanged(SensorEvent event) {
                 if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
@@ -99,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         };
 
-
+        // ask user permission for step counter feature
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -125,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         if (event.sensor == stepCounter) {
             // Each event represents a step taken
-            int totalSteps = (int) event.values[0];
+            totalSteps = (int) event.values[0];
 
             System.out.println(totalSteps);
 
@@ -134,14 +149,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    private void updateStepCountDisplay(int totalSteps) {
-        TextView stepCountTextView = findViewById(R.id.stepCounterText);
-        stepCountTextView.setText(String.valueOf(totalSteps));
+    private void updateStepCountDisplay(int totalSteps) { // update text based on steps
+        stepCounterTextView.setText(String.valueOf(totalSteps));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // register various sensor listeners
         if (accelerometer != null && gyroscope != null) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
             sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
@@ -152,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
+        // unregister listeners when activity is onPause
         if (accelerometer != null && gyroscope != null) {
             sensorManager.unregisterListener(this);
         }
@@ -166,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
+        // request user permission for steps counter
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION: {
@@ -178,6 +195,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 return;
             }
         }
+    }
+
+    private int getCurrentSteps() {
+        return totalSteps;
+    }
+
+    private void finishSession() {
+        if (isCounterStarted) {
+            isCounterStarted = false;
+            int totalSteps = getCurrentSteps();
+            // Save to database
+//            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(Va));
+            String location = "Vancouver";
+            db.insertLog(location, totalSteps);
+
+            sensorManager.unregisterListener(stepListener);
+            stepCounterTextView.setText("Session finished. Steps: " + totalSteps);
+            resetSteps();
+        }
+    }
+
+    private void resetSteps() {
+        totalSteps = 0;
     }
 
 

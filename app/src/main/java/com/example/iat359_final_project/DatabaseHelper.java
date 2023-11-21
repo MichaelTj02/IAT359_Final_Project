@@ -48,6 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
 //    public long insertLog(double distance, String location, int steps) {
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        ContentValues values = new ContentValues();

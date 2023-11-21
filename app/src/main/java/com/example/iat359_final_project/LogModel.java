@@ -6,9 +6,9 @@ public class LogModel {
     private String location;
     private int steps;
 
-    public LogModel(int id, double distance, String location, int steps) {
+    public LogModel(int id, String location, int steps) {
         this.id = id;
-        this.distance = distance;
+//        this.distance = distance;
         this.location = location;
         this.steps = steps;
     }
