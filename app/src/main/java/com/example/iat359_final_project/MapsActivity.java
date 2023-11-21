@@ -30,23 +30,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
+        if(mapFragment == null){
+            Log.e("MapsActivity", "Map fragment not found");
+        }else{
             mapFragment.getMapAsync(this);
+            checkLocationPermission();
         }
-        //checkLocationPermission();
+
     }
 
     private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted, request the permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_LOCATION);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
         } else {
-            // Permission has already been granted
-            // You can proceed to access the location
             showUserLocation();
         }
     }
@@ -55,16 +51,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Log permission denial or handle it appropriately
+            Log.d("MapsActivity", "Location permission denied");
             return;
         }
+
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-            if (location != null) {
+            if (location != null && mMap != null) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 LatLng userLatLng = new LatLng(latitude, longitude);
+
+                // Check if mMap is null before adding marker or moving camera
                 mMap.addMarker(new MarkerOptions().position(userLatLng).title("You are here"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_ZOOM_LEVEL));
+            } else {
+                // Log if location is null or mMap is null
+                Log.d("MapsActivity", "Location is null or mMap is null");
             }
+        }).addOnFailureListener(this, e -> {
+            // Log any failure in getting location
+            Log.e("MapsActivity", "Error getting location", e);
         });
     }
 
