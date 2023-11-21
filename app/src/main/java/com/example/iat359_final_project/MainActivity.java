@@ -1,5 +1,6 @@
 package com.example.iat359_final_project;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button btnViewMap = findViewById(R.id.btnViewMap);
         Button btnStartSession = findViewById(R.id.btnStartSession);
         Button btnFinishSession = findViewById(R.id.btnFinishSession);
+        Button btnLocInfo = findViewById(R.id.btnInfo);
 
         stepCounterTextView = (TextView) findViewById(R.id.stepCounterText);
 
@@ -91,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 finishSession();
             }
         });
+
+        btnLocInfo.setOnClickListener(new View.OnClickListener() { // set search info button onClick
+            @Override
+            public void onClick(View v) {
+                performWebSearch("Vancouver"); // Replace with actual location data if available
+            }
+        });
+
 
         stepListener = new SensorEventListener() { // step counter sensor listener
             @Override
@@ -218,6 +228,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void resetSteps() {
         totalSteps = 0;
+    }
+
+    private void performWebSearch(String query) {
+        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+        intent.putExtra(SearchManager.QUERY, query);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
 

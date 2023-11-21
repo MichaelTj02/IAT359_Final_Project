@@ -22,13 +22,23 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true" />
 
+    <!-- Button to search information -->
+    <Button
+        android:id="@+id/btnInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Information"
+        android:layout_below="@id/btnViewMap"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" />
+
     <!-- Button to start session -->
     <Button
         android:id="@+id/btnStartSession"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Session"
-        android:layout_below="@id/btnViewMap"
+        android:layout_below="@id/btnInfo"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:onClick="startSession" />
