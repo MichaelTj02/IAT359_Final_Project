@@ -232,11 +232,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void performWebSearch(String query) {
+        System.out.println("search");
         Uri searchUri = Uri.parse("https://www.google.com/search?q=" + Uri.encode(query));
         Intent intent = new Intent(Intent.ACTION_VIEW, searchUri);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
+        startActivity(intent);
+//        if (intent.resolveActivity(getPackageManager()) != null) {
+//            startActivity(intent);
+//        }
     }
 
 
