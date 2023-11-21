@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView stepCounterTextView;
     private boolean isCounterStarted = false;
     private int totalSteps;
+    private int finalTotalSteps;
     private int stepOffset = 0;
 
     private Database db;
@@ -150,18 +151,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // Process gyroscope data for step detection
         }
         if (event.sensor == stepCounter) {
-            // Each event represents a step taken
-            totalSteps = (int) event.values[0];
-
-            System.out.println(totalSteps);
-
-            // Update UI
-            updateStepCountDisplay(totalSteps);
+            if (isCounterStarted) {
+                if (stepOffset == 0) {
+                    stepOffset = (int) event.values[0];
+                }
+                int currentSteps = (int) event.values[0] - stepOffset;
+                finalTotalSteps = currentSteps; // Update finalTotalSteps continuously
+                stepCounterTextView.setText("Steps: " + currentSteps);
+            }
         }
     }
 
-    private void updateStepCountDisplay(int totalSteps) { // update text based on steps
+    protected void updateStepCountDisplay(int totalSteps) { // update text based on steps
         stepCounterTextView.setText(String.valueOf(totalSteps));
+        System.out.println(totalSteps);
     }
 
     @Override
@@ -209,26 +212,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private int getCurrentSteps() {
-        return totalSteps;
+        return finalTotalSteps;
     }
 
     private void finishSession() {
         if (isCounterStarted) {
             isCounterStarted = false;
-            int totalSteps = getCurrentSteps();
+            int totalFinishSessionSteps = getCurrentSteps();
             // Save to database
 //            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(Va));
             String location = "Vancouver";
-            db.insertData("Vancouver", String.valueOf(totalSteps));
+            db.insertData(location, String.valueOf(totalFinishSessionSteps));
 
-            stepCounterTextView.setText("Session finished. Steps: " + totalSteps);
+            stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
             sensorManager.unregisterListener(stepListener);
             resetSteps();
         }
     }
 
     private void resetSteps() {
-        totalSteps = 0;
+        finalTotalSteps = 0;
     }
 
     private void performWebSearch(String query) {
