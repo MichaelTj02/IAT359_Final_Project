@@ -6,15 +6,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
+    private Sensor stepDetector;
     private Sensor accelerometer;
     private Sensor gyroscope;
 
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (sensorManager != null) {
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         }
 
         btnCheckLogs.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +83,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float z = event.values[2];
             // Process gyroscope data for step detection
         }
+        if (event.sensor == stepDetector) {
+            // Each event represents a step taken
+            int totalSteps = (int) event.values[0];
+
+            Log.d("StepCounter", "Total steps: " + totalSteps);
+
+            // Update your UI or logic with the total steps
+            updateStepCountDisplay(totalSteps);
+        }
+    }
+
+    private void updateStepCountDisplay(int totalSteps) {
+        TextView stepCountTextView = findViewById(R.id.stepCounterText);
+        stepCountTextView.setText(String.valueOf(totalSteps));
     }
 
     @Override
@@ -90,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        if (accelerometer != null && gyroscope != null) {
+        if (accelerometer != null && gyroscope != null && stepDetector != null) {
             sensorManager.unregisterListener(this);
         }
     }

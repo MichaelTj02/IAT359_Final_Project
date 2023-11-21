@@ -32,12 +32,21 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="TextView" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@id/btnStartSession"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" >
+
+        <TextView
+            android:id="@+id/stepCounterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="TextView"
+            android:textSize="20sp" />
+    </LinearLayout>
 
 </RelativeLayout>
