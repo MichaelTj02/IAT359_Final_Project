@@ -7,6 +7,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -231,8 +232,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void performWebSearch(String query) {
-        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-        intent.putExtra(SearchManager.QUERY, query);
+        Uri searchUri = Uri.parse("https://www.google.com/search?q=" + Uri.encode(query));
+        Intent intent = new Intent(Intent.ACTION_VIEW, searchUri);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
