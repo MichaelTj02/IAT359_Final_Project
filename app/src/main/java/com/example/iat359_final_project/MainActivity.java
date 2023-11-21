@@ -210,8 +210,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             String location = "Vancouver";
             db.insertData("Vancouver", String.valueOf(totalSteps));
 
-            sensorManager.unregisterListener(stepListener);
             stepCounterTextView.setText("Session finished. Steps: " + totalSteps);
+            sensorManager.unregisterListener(stepListener);
             resetSteps();
         }
     }
