@@ -12,10 +12,9 @@ public class Database {
         dbHelper = new DatabaseHelper(context);
     }
 
-    public long insertLog(double distance, String location, int steps) {
+    public long insertLog(String location, int steps) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("distance", distance);
         values.put("location", location);
         values.put("steps", steps);
         long result = db.insert("logs", null, values);
