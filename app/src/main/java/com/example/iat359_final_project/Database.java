@@ -39,6 +39,12 @@ public class Database {
         return cursor;
     }
 
+    public void deleteLog(int logId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(Constants.TABLE_NAME, Constants.UID + "=?", new String[]{String.valueOf(logId)});
+        db.close();
+    }
+
     public ArrayList<String> getSelectedDataList(String location)
     {
         //select plants from database of type 'herb'
@@ -59,6 +65,15 @@ public class Database {
             queryResult.add(logLocation + "," + logSteps);
         }
         return queryResult;
+    }
+
+    public void updateLog(int logId, String newLocation, String newSteps) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Constants.LOCATION, newLocation);
+        values.put(Constants.STEPS_AMOUNT, newSteps);
+        db.update(Constants.TABLE_NAME, values, Constants.UID + "=?", new String[]{String.valueOf(logId)});
+        db.close();
     }
 
 }

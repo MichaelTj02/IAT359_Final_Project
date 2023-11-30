@@ -52,7 +52,6 @@ public class ViewLogsActivity extends Activity {
         }
         myRecycler.setAdapter(customAdapter);
 
-        // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         myRecycler.setLayoutManager(mLayoutManager);
     }
