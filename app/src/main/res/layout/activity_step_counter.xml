@@ -1,18 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical">
+
+    <!-- MapView to display the map -->
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_height="400dp" />
 
     <!-- TextView to display step count -->
     <TextView
-        android:id="@+id/tvStepCount"
+        android:id="@+id/stepCounterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Step Count: 0"
+        android:layout_gravity="center"
+        android:text="Steps: 0"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_centerInParent="true" />
+        android:padding="16dp" />
 
-    <!-- Other UI elements can be added as needed -->
-</RelativeLayout>
+    <!-- EditText for session title -->
+    <EditText
+        android:id="@+id/sessionTitleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter session title"
+        android:padding="16dp" />
+
+    <!-- Button to finish the session -->
+    <Button
+        android:id="@+id/btnFinishSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finish Session"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>

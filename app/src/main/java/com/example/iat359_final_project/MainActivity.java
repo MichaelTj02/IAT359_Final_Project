@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
             stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         }
 
@@ -84,11 +82,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnStartSession.setOnClickListener(new View.OnClickListener() { // set start session onClick
             @Override
             public void onClick(View v) {
-                if (!isCounterStarted) {
-                    isCounterStarted = true;
-                    stepOffset = 0; // Reset the step offset
-                    sensorManager.registerListener(stepListener, stepCounter, SensorManager.SENSOR_DELAY_UI);
-                }
+//                if (!isCounterStarted) {
+//                    isCounterStarted = true;
+//                    stepOffset = 0; // Reset the step offset
+//                    sensorManager.registerListener(stepListener, stepCounter, SensorManager.SENSOR_DELAY_UI);
+//                }
+                Intent intent = new Intent(MainActivity.this, StepCounterActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -141,19 +141,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor == accelerometer) {
-            // Handle accelerometer data
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-            // Process accelerometer data for step detection
-        } else if (event.sensor == gyroscope) {
-            // Handle gyroscope data
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-            // Process gyroscope data for step detection
-        }
+//        if (event.sensor == accelerometer) {
+//            // Handle accelerometer data
+//            float x = event.values[0];
+//            float y = event.values[1];
+//            float z = event.values[2];
+//            // Process accelerometer data for step detection
+//        } else if (event.sensor == gyroscope) {
+//            // Handle gyroscope data
+//            float x = event.values[0];
+//            float y = event.values[1];
+//            float z = event.values[2];
+//            // Process gyroscope data for step detection
+//        }
         if (event.sensor == stepCounter) {
             if (isCounterStarted) {
                 if (stepOffset == 0) {

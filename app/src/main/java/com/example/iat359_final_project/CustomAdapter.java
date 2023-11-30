@@ -56,23 +56,23 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             stepsTextView = (TextView) itemView.findViewById(R.id.stepsEntry);
 
 
-            itemView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    int action = event.getActionMasked();
-                    int position = getAdapterPosition();
-                    if (action == MotionEvent.ACTION_DOWN && position != RecyclerView.NO_POSITION) {
-                        // Handle swipe-to-delete here
-                        deleteItem(position);
-
-                        return true;
-
-                    }
-                    return false;
-                }
-
-
-            });
+//            itemView.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    int action = event.getActionMasked();
+//                    int position = getAdapterPosition();
+//                    if (action == MotionEvent.ACTION_DOWN && position != RecyclerView.NO_POSITION) {
+//                        // Handle swipe-to-delete here
+//                        deleteItem(position);
+//
+//                        return true;
+//
+//                    }
+//                    return false;
+//                }
+//
+//
+//            });
 
         }
     }
