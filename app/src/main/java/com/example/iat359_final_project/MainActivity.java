@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int totalSteps;
     private int finalTotalSteps;
     private int stepOffset = 0;
+    private EditText sessionTitleEditText;
 
     private Database db;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button btnStartSession = findViewById(R.id.btnStartSession);
         Button btnFinishSession = findViewById(R.id.btnFinishSession);
         Button btnLocInfo = findViewById(R.id.btnInfo);
+        sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
 
         stepCounterTextView = (TextView) findViewById(R.id.stepCounterText);
 
@@ -220,10 +223,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (isCounterStarted) {
             isCounterStarted = false;
             int totalFinishSessionSteps = getCurrentSteps();
-            // Save to database
-//            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(Va));
+            String sessionTitle = sessionTitleEditText.getText().toString();
+
             String location = "Vancouver";
             db.insertData(location, String.valueOf(totalFinishSessionSteps));
+            //db.insertData(location, sessionTitle, String.valueOf(totalFinishSessionSteps));
 
             stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
             sensorManager.unregisterListener(stepListener);
@@ -241,9 +245,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Uri searchUri = Uri.parse("https://www.google.com/search?q=" + Uri.encode(query));
         Intent intent = new Intent(Intent.ACTION_VIEW, searchUri);
         startActivity(intent);
-//        if (intent.resolveActivity(getPackageManager()) != null) {
-//            startActivity(intent);
-//        }
     }
 
 

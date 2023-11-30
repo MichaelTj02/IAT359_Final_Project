@@ -57,19 +57,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_below="@id/btnFinishSession"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true" >
 
-        <!-- text to show the step counter -->
         <TextView
             android:id="@+id/stepCounterText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="text"
             android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/sessionTitleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter session title"
+            android:inputType="text" />
+
+        <!-- text to show the step counter -->
+
+
+        
     </LinearLayout>
 
 </RelativeLayout>

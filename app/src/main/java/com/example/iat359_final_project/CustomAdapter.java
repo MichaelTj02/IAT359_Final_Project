@@ -2,6 +2,7 @@ package com.example.iat359_final_project;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
     public ArrayList<String> list;
-    Context context;
+    private Database db;
 
     public CustomAdapter(ArrayList<String> list) {
         this.list = list;
@@ -42,12 +43,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         return list.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView locationTextView, stepsTextView;
         public LinearLayout myLayout;
-
-        Context context;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -56,8 +55,34 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             locationTextView = (TextView) itemView.findViewById(R.id.locationEntry);
             stepsTextView = (TextView) itemView.findViewById(R.id.stepsEntry);
 
-            context = itemView.getContext();
+
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getActionMasked();
+                    int position = getAdapterPosition();
+                    if (action == MotionEvent.ACTION_DOWN && position != RecyclerView.NO_POSITION) {
+                        // Handle swipe-to-delete here
+                        deleteItem(position);
+
+                        return true;
+
+                    }
+                    return false;
+                }
+
+
+            });
 
         }
+    }
+
+    public void deleteItem(int position) {
+        String item = list.get(position);
+        String[] results = item.split(",");
+        String location = results[0];
+        list.remove(position);
+        notifyItemRemoved(position);
+        db.deleteData(location);
     }
 }

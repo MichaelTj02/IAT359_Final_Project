@@ -6,5 +6,6 @@ public class Constants {
     public static final String UID = "_id";
     public static final String LOCATION = "location";
     public static final String STEPS_AMOUNT = "steps_amount";
+    public static final String SESSION_TITLE = "session_title";
     public static final int DATABASE_VERSION = 1;
 }

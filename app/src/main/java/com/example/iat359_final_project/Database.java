@@ -30,6 +30,17 @@ public class Database {
         return id;
     }
 
+    public long insertdata (String location, String steps, String sessionTitle) // to insert data
+    {
+        db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Constants.LOCATION, location);
+        contentValues.put(Constants.SESSION_TITLE, sessionTitle);
+        contentValues.put(Constants.STEPS_AMOUNT, steps);
+        long id = db.insert(Constants.TABLE_NAME, null, contentValues);
+        return id;
+    }
+
     public Cursor getData() // to get query data
     {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -39,11 +50,6 @@ public class Database {
         return cursor;
     }
 
-    public void deleteLog(int logId) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        db.delete(Constants.TABLE_NAME, Constants.UID + "=?", new String[]{String.valueOf(logId)});
-        db.close();
-    }
 
     public ArrayList<String> getSelectedDataList(String location)
     {
@@ -73,6 +79,12 @@ public class Database {
         values.put(Constants.LOCATION, newLocation);
         values.put(Constants.STEPS_AMOUNT, newSteps);
         db.update(Constants.TABLE_NAME, values, Constants.UID + "=?", new String[]{String.valueOf(logId)});
+        db.close();
+    }
+
+    public void deleteData(String location) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(Constants.TABLE_NAME, Constants.LOCATION + "=?", new String[]{location});
         db.close();
     }
 
