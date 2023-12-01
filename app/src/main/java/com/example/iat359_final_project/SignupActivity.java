@@ -13,31 +13,41 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SignupActivity extends AppCompatActivity  {
     private EditText usernameEditText, passwordEditText;
     private SharedPreferences sharedPreferences;
+    public static final String DEFAULT = "not available";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         usernameEditText = findViewById(R.id.editTextUsername);
         passwordEditText = findViewById(R.id.editTextPassword);
+
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", DEFAULT);
+        String password = sharedPreferences.getString("password", DEFAULT);
+
+        if (username.equals(DEFAULT) || password.equals(DEFAULT)) {
+        }
+        else
+        {
+            Intent intent= new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         Button signupButton = findViewById(R.id.signupButton);
         signupButton.setOnClickListener(v -> signUpUser());
     }
 
     private void signUpUser() {
-        String username = usernameEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
+        SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("username", usernameEditText.getText().toString());
+        editor.putString("password", passwordEditText.getText().toString());
+        editor.commit();
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(username, password);
-        editor.apply();
-
-        // Proceed to the main activity or login
-        startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-        finish();
+        Intent intent= new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
 }

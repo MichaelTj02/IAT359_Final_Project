@@ -246,13 +246,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         finalTotalSteps = 0;
     }
 
-    private void performWebSearch(String query) {
-        System.out.println("search");
-        Uri searchUri = Uri.parse("https://www.google.com/search?q=" + Uri.encode(query));
-        Intent intent = new Intent(Intent.ACTION_VIEW, searchUri);
-        startActivity(intent);
-    }
-
     private void performWebSearch() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -267,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         String city = getCityFromLocation(latitude, longitude);
 
                         // Search the city on Google
-                        String query = "https://www.google.com/search?q=" + city;
+                        String query = "https://www.google.com/search?q=" + city + " weather today";
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(query));
                         startActivity(intent);

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
     private SharedPreferences sharedPreferences;
-
+    public static final String DEFAULT = "not available";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,18 +28,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        String username = usernameEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
+        SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String username = sharedPrefs.getString("username", DEFAULT);
+        String password = sharedPrefs.getString("password", DEFAULT);
 
-        String storedPassword = sharedPreferences.getString(username, "");
+        if (usernameEditText.getText().toString().equals(username) && passwordEditText.getText().toString().equals(password))
+        {
+            Toast.makeText(this, "Login Success", Toast.LENGTH_LONG).show();
+            Intent intent= new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else
+        {
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putString("username", DEFAULT);
+            editor.putString("password", DEFAULT);
+            editor.commit();
 
-        if (password.equals(storedPassword) && !storedPassword.isEmpty()) {
-            // Passwords match, proceed to main activity or desired screen
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
-        } else {
-            // Incorrect credentials
-            Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Credentials Reset", Toast.LENGTH_LONG).show();
+            Intent intent= new Intent(this, SignupActivity.class);
+            startActivity(intent);
         }
     }
 }
