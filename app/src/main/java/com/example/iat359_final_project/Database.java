@@ -20,22 +20,22 @@ public class Database {
         helper = new DatabaseHelper(context);
     }
 
-    public long insertData (String location, String steps) // to insert data
-    {
-        db = helper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Constants.LOCATION, location);
-        contentValues.put(Constants.STEPS_AMOUNT, steps);
-        long id = db.insert(Constants.TABLE_NAME, null, contentValues);
-        return id;
-    }
+//    public long insertData (String location, String steps) // to insert data
+//    {
+//        db = helper.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(Constants.LOCATION, location);
+//        contentValues.put(Constants.STEPS_AMOUNT, steps);
+//        long id = db.insert(Constants.TABLE_NAME, null, contentValues);
+//        return id;
+//    }
 
-    public long insertdata (String location, String steps, String sessionTitle) // to insert data
+    public long insertData (String location, String steps, String sessionTitle) // to insert data
     {
         db = helper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Constants.LOCATION, location);
         contentValues.put(Constants.SESSION_TITLE, sessionTitle);
+        contentValues.put(Constants.LOCATION, location);
         contentValues.put(Constants.STEPS_AMOUNT, steps);
         long id = db.insert(Constants.TABLE_NAME, null, contentValues);
         return id;
@@ -45,7 +45,7 @@ public class Database {
     {
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        String[] columns = {Constants.UID, Constants.LOCATION, Constants.STEPS_AMOUNT};
+        String[] columns = {Constants.UID, Constants.SESSION_TITLE, Constants.LOCATION, Constants.STEPS_AMOUNT};
         Cursor cursor = db.query(Constants.TABLE_NAME, columns, null, null, null, null, null);
         return cursor;
     }
@@ -55,7 +55,7 @@ public class Database {
     {
         //select plants from database of type 'herb'
         SQLiteDatabase db = helper.getWritableDatabase();
-        String[] columns = {Constants.LOCATION, Constants.STEPS_AMOUNT};
+        String[] columns = {Constants.SESSION_TITLE, Constants.LOCATION, Constants.STEPS_AMOUNT};
 
         String selection = Constants.LOCATION + "='" +location+ "'";  //Constants.TYPE = 'type'
         Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, null, null, null, null);
@@ -64,18 +64,21 @@ public class Database {
         ArrayList<String> queryResult = new ArrayList<>();
         while (cursor.moveToNext()) {
 
-            int index1 = cursor.getColumnIndex(Constants.LOCATION);
-            int index2 = cursor.getColumnIndex(Constants.STEPS_AMOUNT);
-            String logLocation = cursor.getString(index1);
-            String logSteps = cursor.getString(index2);
-            queryResult.add(logLocation + "," + logSteps);
+            int index1 = cursor.getColumnIndex(Constants.SESSION_TITLE);
+            int index2 = cursor.getColumnIndex(Constants.LOCATION);
+            int index3 = cursor.getColumnIndex(Constants.STEPS_AMOUNT);
+            String logTitle = cursor.getString(index1);
+            String logLocation = cursor.getString(index2);
+            String logSteps = cursor.getString(index3);
+            queryResult.add(logTitle + "," + logLocation + "," + logSteps);
         }
         return queryResult;
     }
 
-    public void updateLog(int logId, String newLocation, String newSteps) {
+    public void updateLog(int logId, String newLocation, String newSteps, String newTitle) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(Constants.SESSION_TITLE, newTitle);
         values.put(Constants.LOCATION, newLocation);
         values.put(Constants.STEPS_AMOUNT, newSteps);
         db.update(Constants.TABLE_NAME, values, Constants.UID + "=?", new String[]{String.valueOf(logId)});

@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnCheckLogs.setOnClickListener(new View.OnClickListener() { // set check log button onClick
             @Override
             public void onClick(View v) {
-                // Handle click to check logs
                 startActivity(new Intent(MainActivity.this, ViewLogsActivity.class));
             }
         });
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnFinishSession.setOnClickListener(new View.OnClickListener() { // set finish session onClick
             @Override
             public void onClick(View v) {
-                finishSession();
+                //finishSession();
             }
         });
 
@@ -219,21 +218,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return totalSteps;
     }
 
-    private void finishSession() {
-        if (isCounterStarted) {
-            isCounterStarted = false;
-            int totalFinishSessionSteps = getCurrentSteps();
-            String sessionTitle = sessionTitleEditText.getText().toString();
-
-            String location = "Vancouver";
-            db.insertData(location, String.valueOf(totalFinishSessionSteps));
-            //db.insertData(location, sessionTitle, String.valueOf(totalFinishSessionSteps));
-
-            stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
-            sensorManager.unregisterListener(stepListener);
-            resetSteps();
-        }
-    }
+//    private void finishSession() {
+//        if (isCounterStarted) {
+//            isCounterStarted = false;
+//            int totalFinishSessionSteps = getCurrentSteps();
+//            String sessionTitle = sessionTitleEditText.getText().toString();
+//
+//            String location = "Vancouver";
+//            db.insertData(location, String.valueOf(totalFinishSessionSteps));
+//            //db.insertData(location, sessionTitle, String.valueOf(totalFinishSessionSteps));
+//
+//            stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
+//            sensorManager.unregisterListener(stepListener);
+//            resetSteps();
+//        }
+//    }
 
     private void resetSteps() {
         totalSteps = 0;

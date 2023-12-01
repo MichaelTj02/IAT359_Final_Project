@@ -30,15 +30,17 @@ public class ViewLogsActivity extends Activity {
 
         Cursor cursor = db.getData();
 
-        int index1 = cursor.getColumnIndex(Constants.LOCATION);
-        int index2 = cursor.getColumnIndex(Constants.STEPS_AMOUNT);
+        int index1 = cursor.getColumnIndex(Constants.SESSION_TITLE);
+        int index2 = cursor.getColumnIndex(Constants.LOCATION);
+        int index3 = cursor.getColumnIndex(Constants.STEPS_AMOUNT);
 
         ArrayList<String> mArrayList = new ArrayList<String>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            String logLocation = cursor.getString(index1);
-            String logSteps = cursor.getString(index2);
-            String s = logLocation +"," + logSteps;
+            String logTitle = cursor.getString(index1);
+            String logLocation = cursor.getString(index2);
+            String logSteps = cursor.getString(index3);
+            String s = logTitle + "," + logLocation + "," + logSteps;
             mArrayList.add(s);
             cursor.moveToNext();
         }

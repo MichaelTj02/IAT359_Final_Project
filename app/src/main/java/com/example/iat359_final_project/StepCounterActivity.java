@@ -1,25 +1,49 @@
 package com.example.iat359_final_project;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-public class StepCounterActivity extends AppCompatActivity implements SensorEventListener {
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class StepCounterActivity extends AppCompatActivity implements SensorEventListener, OnMapReadyCallback {
     private static final int MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION = 1; // permission for step counter
     private SensorManager sensorManager;
     private Sensor stepCounter;
+    private MapView mapView;
+    private GoogleMap mMap;
     private Sensor accelerometer;
     private Sensor gyroscope;
     private SensorEventListener stepListener;
@@ -29,8 +53,11 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     private int finalTotalSteps;
     private int stepOffset = 0;
     private EditText sessionTitleEditText;
-
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 123;
+    private static final float DEFAULT_ZOOM_LEVEL = 15f;
     private Database db;
+    private Polyline currentPolyline;
+    private List<LatLng> pathCoordinates = new ArrayList<>();
 
 
     @Override
@@ -38,8 +65,9 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_counter);
 
-        Button btnFinishSession = findViewById(R.id.btnFinishSession);
+        Button finish = findViewById(R.id.btnFinish);
 
+        EditText titleText = findViewById(R.id.sessionTitleEditText);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
@@ -51,13 +79,12 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         db = new Database(this);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        if (sensorManager != null) {
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-            stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        }
 
+        mapView = findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
+        checkLocationPermission();
 
         stepListener = new SensorEventListener() { // step counter sensor listener
             @Override
@@ -82,10 +109,12 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
             }
         };
 
-        btnFinishSession.setOnClickListener(new View.OnClickListener() {
+        finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finishSession();
+                Intent intent = new Intent(StepCounterActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -104,6 +133,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         super.onResume();
         // register sensor listener
         sensorManager.registerListener(stepListener, stepCounter, SensorManager.SENSOR_DELAY_UI);
+        mapView.onResume();
 
         if (!isCounterStarted) {
             isCounterStarted = true;
@@ -117,6 +147,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         super.onPause();
         // unregister listener when activity is onPause
         sensorManager.unregisterListener(stepListener);
+        mapView.onPause();
     }
 
     @Override
@@ -137,7 +168,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-    
+
 
     private int getCurrentSteps() {
         return totalSteps;
@@ -147,12 +178,44 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         if (isCounterStarted) {
             isCounterStarted = false;
             int totalFinishSessionSteps = getCurrentSteps();
-            String location = "Vancouver";
-            db.insertData(location, String.valueOf(totalFinishSessionSteps));
 
-            stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
-            sensorManager.unregisterListener(stepListener);
-            resetSteps();
+            // Check for location permissions
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // Get current location
+                FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                double latitude = location.getLatitude();
+                                double longitude = location.getLongitude();
+                                String city = getCityFromLocation(latitude, longitude);
+
+                                EditText sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
+                                String sessionTitle = sessionTitleEditText.getText().toString();
+
+                                // Insert data into the database along with the session title and city
+                                db.insertData(sessionTitle, city, String.valueOf(totalFinishSessionSteps));
+
+                                stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
+                                sensorManager.unregisterListener(stepListener);
+
+                                // Draw the user's path on the map (Assuming 'pathCoordinates' contains LatLng objects)
+                                if (!pathCoordinates.isEmpty() && mMap != null) {
+                                    mMap.addPolyline(new PolylineOptions()
+                                            .addAll(pathCoordinates)
+                                            .width(12)
+                                            .color(Color.BLUE)
+                                            .geodesic(true));
+                                }
+                                resetSteps();
+                            }
+                        });
+            } else {
+                // Handle the case where permissions are not granted
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
         }
     }
 
@@ -160,4 +223,111 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         totalSteps = 0;
         finalTotalSteps = 0;
     }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                if (isCounterStarted) {
+                    pathCoordinates.add(latLng);
+                    if (currentPolyline != null) {
+                        currentPolyline.remove(); // Remove the existing line before adding a new segment
+                    }
+                    currentPolyline = mMap.addPolyline(new PolylineOptions()
+                            .addAll(pathCoordinates)
+                            .width(12)
+                            .color(Color.BLUE)
+                            .geodesic(true));
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+        } else {
+            showUserLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showUserLocation();
+                if (mMap != null) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Handle permissions if required
+                        return;
+                    }
+                    mMap.setMyLocationEnabled(true);
+                }
+            } else {
+                Log.d("StepCounterActivity", "Permission denied");
+            }
+        }
+    }
+
+    private void showUserLocation() {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("StepCounterActivity", "Location permission denied");
+            return;
+        }
+
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null && mMap != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                LatLng userLatLng = new LatLng(latitude, longitude);
+
+                mMap.addMarker(new MarkerOptions().position(userLatLng).title("You are here"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_ZOOM_LEVEL));
+            } else {
+                Log.d("StepCounterActivity", "Location is null or mMap is null");
+            }
+        }).addOnFailureListener(this, e -> {
+            Log.e("StepCounterActivity", "Error getting location", e);
+        });
+    }
+
+    private String getCityFromLocation(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(this);
+        String city = "";
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses.size() > 0) {
+                city = addresses.get(0).getLocality();
+                // You can also retrieve more information like country, postal code, etc. from the Address object
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return city;
+    }
+
+
 }

@@ -33,8 +33,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public void onBindViewHolder(CustomAdapter.MyViewHolder holder, int position) {
 
         String[]  results = (list.get(position).toString()).split(",");
+        holder.sessionTitle.setText(results[1]);
         holder.locationTextView.setText(results[0]);
-        holder.stepsTextView.setText(results[1]);
+        holder.stepsTextView.setText(results[2]);
+
     }
 
 
@@ -45,7 +47,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView locationTextView, stepsTextView;
+        public TextView locationTextView, stepsTextView, sessionTitle;
         public LinearLayout myLayout;
 
         public MyViewHolder(View itemView) {
@@ -54,6 +56,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
             locationTextView = (TextView) itemView.findViewById(R.id.locationEntry);
             stepsTextView = (TextView) itemView.findViewById(R.id.stepsEntry);
+            sessionTitle = (TextView) itemView.findViewById(R.id.sessionTitleEntry);
 
 
 //            itemView.setOnTouchListener(new View.OnTouchListener() {

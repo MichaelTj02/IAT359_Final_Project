@@ -13,11 +13,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
 
     private static final String CREATE_TABLE =
-            "CREATE TABLE "+
+            "CREATE TABLE " +
                     Constants.TABLE_NAME + " (" +
                     Constants.UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Constants.STEPS_AMOUNT + " TEXT, " +
                     Constants.LOCATION + " TEXT, " +
-                    Constants.STEPS_AMOUNT + ");" ;
+                    Constants.SESSION_TITLE + " TEXT);";
 
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + Constants.TABLE_NAME;
 
