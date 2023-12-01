@@ -11,6 +11,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,25 +32,26 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-    private static final int MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION = 1; // permission for step counter
+    private static final int MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 2;
     private SensorManager sensorManager;
     private Sensor stepCounter;
     private Sensor accelerometer;
     private Sensor gyroscope;
     private SensorEventListener stepListener;
     private TextView stepCounterTextView;
+    private SpeechRecognizer speechRecognizer;
     private boolean isCounterStarted = false;
     private int totalSteps;
     private int finalTotalSteps;
     private int stepOffset = 0;
-    private EditText sessionTitleEditText;
-
     private Database db;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,23 +92,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnStartSession.setOnClickListener(new View.OnClickListener() { // set start session onClick
             @Override
             public void onClick(View v) {
-//                if (!isCounterStarted) {
-//                    isCounterStarted = true;
-//                    stepOffset = 0; // Reset the step offset
-//                    sensorManager.registerListener(stepListener, stepCounter, SensorManager.SENSOR_DELAY_UI);
-//                }
                 Intent intent = new Intent(MainActivity.this, StepCounterActivity.class);
                 startActivity(intent);
             }
         });
-
-//        btnFinishSession.setOnClickListener(new View.OnClickListener() { // set finish session onClick
-//            @Override
-//            public void onClick(View v) {
-//                //finishSession();
-//            }
-//        });
-
         btnLocInfo.setOnClickListener(new View.OnClickListener() { // set search info button onClick
             @Override
             public void onClick(View v) {
@@ -136,30 +127,78 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         };
 
-        // ask user permission for step counter feature
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
-                    MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
-        }
+        // For Activity Recognition
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
+                MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
+
+// For Record Audio
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
+//                    MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
+//        }
+//
+//        // Ask user permission for speech recognition
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.RECORD_AUDIO},
+//                    MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+//        }
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle params) {}
+
+            @Override
+            public void onBeginningOfSpeech() {}
+
+            @Override
+            public void onRmsChanged(float rmsdB) {}
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {}
+
+            @Override
+            public void onEndOfSpeech() {
+                startListening();
+            }
+
+            @Override
+            public void onError(int error) {
+                startListening();
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+                ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                if (matches != null && !matches.isEmpty()) {
+                    String spokenText = matches.get(0); // Get the first recognized speech
+                    processVoiceCommand(spokenText); // Process the recognized text
+                }
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {}
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {}
+        });
+
+        startVoiceRecognition();
+
     }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-//        if (event.sensor == accelerometer) {
-//            // Handle accelerometer data
-//            float x = event.values[0];
-//            float y = event.values[1];
-//            float z = event.values[2];
-//            // Process accelerometer data for step detection
-//        } else if (event.sensor == gyroscope) {
-//            // Handle gyroscope data
-//            float x = event.values[0];
-//            float y = event.values[1];
-//            float z = event.values[2];
-//            // Process gyroscope data for step detection
-//        }
         if (event.sensor == stepCounter) {
             if (isCounterStarted) {
                 if (stepOffset == 0) {
@@ -189,6 +228,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (speechRecognizer != null) {
+            speechRecognizer.destroy();
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         // unregister listeners when activity is onPause
@@ -196,6 +243,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorManager.unregisterListener(this);
         }
         sensorManager.unregisterListener(stepListener);
+
+        if (speechRecognizer != null) {
+            speechRecognizer.stopListening();
+        }
     }
 
     @Override
@@ -204,42 +255,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        // request user permission for steps counter
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission was granted, now you can access the step counter sensor
-                } else {
-                    // Permission denied, you can't access the step counter sensor
-                }
-                return;
-            }
+            case MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION:
+                // Handle activity recognition permission result
+                break;
+            case MY_PERMISSIONS_REQUEST_RECORD_AUDIO:
+                // Handle record audio permission result
+                break;
+            // Other cases for additional permissions if needed
         }
     }
 
     private int getCurrentSteps() {
         return totalSteps;
     }
-
-//    private void finishSession() {
-//        if (isCounterStarted) {
-//            isCounterStarted = false;
-//            int totalFinishSessionSteps = getCurrentSteps();
-//            String sessionTitle = sessionTitleEditText.getText().toString();
-//
-//            String location = "Vancouver";
-//            db.insertData(location, String.valueOf(totalFinishSessionSteps));
-//            //db.insertData(location, sessionTitle, String.valueOf(totalFinishSessionSteps));
-//
-//            stepCounterTextView.setText("Session finished. Steps: " + totalFinishSessionSteps);
-//            sensorManager.unregisterListener(stepListener);
-//            resetSteps();
-//        }
-//    }
 
     private void resetSteps() {
         totalSteps = 0;
@@ -286,7 +318,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-//    public void startSession (View v) {
-//        sensorManager.registerListener(this, stepDetector, SensorManager.SENSOR_DELAY_UI);
-//    }
+    private void startVoiceRecognition() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak something");
+        speechRecognizer.startListening(intent);
+    }
+
+    private void startListening() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak something");
+        speechRecognizer.startListening(intent);
+    }
+
+    private void processVoiceCommand(String spokenText) {
+        spokenText = spokenText.toLowerCase(); // Convert the spoken text to lowercase for easier comparison
+
+        // Check for specific commands or keywords and launch corresponding activities
+        if (spokenText.contains("check logs")) {
+            startActivity(new Intent(MainActivity.this, ViewLogsActivity.class));
+        } else if (spokenText.contains("view map")) {
+            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+            startActivity(intent);
+        } else if (spokenText.contains("start session")) {
+            Intent intent = new Intent(MainActivity.this, StepCounterActivity.class);
+            startActivity(intent);
+        } else if (spokenText.contains("view information")) {
+            performWebSearch(); // Invoke the method you've implemented for searching information
+        }
+        else {
+            // Handle unrecognized commands or provide feedback to the user
+            Toast.makeText(this, "Command not recognized", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }
