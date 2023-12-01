@@ -1,86 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="500dp"
+    android:orientation="vertical">
 
-    <!-- Button to check logs -->
-    <Button
-        android:id="@+id/btnCheckLogs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Check Logs"
-        android:layout_marginTop="50dp"
-        android:layout_centerHorizontal="true" />
-
-    <!-- Button to view map -->
-    <Button
-        android:id="@+id/btnViewMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Map"
-        android:layout_below="@id/btnCheckLogs"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true" />
-
-    <!-- Button to search information -->
-    <Button
-        android:id="@+id/btnInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="View Information"
-        android:layout_below="@id/btnViewMap"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true" />
-
-    <!-- Button to start session -->
-    <Button
-        android:id="@+id/btnStartSession"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Session"
-        android:layout_below="@id/btnInfo"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:onClick="startSession" />
-
-    <Button
-        android:id="@+id/btnFinishSession"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finish Session"
-        android:layout_below="@id/btnStartSession"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:onClick="startSession" />
-
-    <LinearLayout
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gridLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@id/btnFinishSession"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true" >
+        android:columnCount="2"
+        android:rowCount="2"
+        android:padding="16dp"
+        android:alignmentMode="alignMargins"
+        android:columnOrderPreserved="false"
+        android:rowOrderPreserved="false">
 
-        <TextView
-            android:id="@+id/stepCounterText"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="text"
-            android:textSize="20sp" />
+        <!-- Check Logs Button -->
+        <Button
+            android:id="@+id/btnCheckLogs"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Check Logs"
+            android:background="@drawable/rounded_rectangle_button"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"/>
 
-        <EditText
-            android:id="@+id/sessionTitleEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter session title"
-            android:inputType="text" />
+        <!-- View Map Button -->
+        <Button
+            android:id="@+id/btnViewMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="View Map"
+            android:background="@drawable/rounded_rectangle_button"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"/>
 
-        <!-- text to show the step counter -->
+        <!-- View Information Button -->
+        <Button
+            android:id="@+id/btnViewInformation"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:text="View Information"
+            android:background="@drawable/rounded_rectangle_button"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"/>
 
+        <!-- Start Session Button -->
+        <Button
+            android:id="@+id/btnStartSession"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Start Session"
+            android:background="@drawable/rounded_rectangle_button"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"/>
 
-
-    </LinearLayout>
-
-</RelativeLayout>
+    </GridLayout>
+</LinearLayout>

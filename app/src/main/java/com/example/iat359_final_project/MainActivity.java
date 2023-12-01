@@ -7,6 +7,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,8 +24,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -50,11 +57,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button btnCheckLogs = findViewById(R.id.btnCheckLogs);
         Button btnViewMap = findViewById(R.id.btnViewMap);
         Button btnStartSession = findViewById(R.id.btnStartSession);
-        Button btnFinishSession = findViewById(R.id.btnFinishSession);
-        Button btnLocInfo = findViewById(R.id.btnInfo);
-        sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
+        Button btnLocInfo = findViewById(R.id.btnViewInformation);
 
-        stepCounterTextView = (TextView) findViewById(R.id.stepCounterText);
+//        sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
+//
+//        stepCounterTextView = (TextView) findViewById(R.id.stepCounterText);
 
         db = new Database(this);
 
@@ -91,17 +98,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        btnFinishSession.setOnClickListener(new View.OnClickListener() { // set finish session onClick
-            @Override
-            public void onClick(View v) {
-                //finishSession();
-            }
-        });
+//        btnFinishSession.setOnClickListener(new View.OnClickListener() { // set finish session onClick
+//            @Override
+//            public void onClick(View v) {
+//                //finishSession();
+//            }
+//        });
 
         btnLocInfo.setOnClickListener(new View.OnClickListener() { // set search info button onClick
             @Override
             public void onClick(View v) {
-                performWebSearch("Vancouver"); // Replace with actual location data if available
+                performWebSearch(); // Replace with actual location data if available
             }
         });
 
@@ -244,6 +251,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Uri searchUri = Uri.parse("https://www.google.com/search?q=" + Uri.encode(query));
         Intent intent = new Intent(Intent.ACTION_VIEW, searchUri);
         startActivity(intent);
+    }
+
+    private void performWebSearch() {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling ActivityCompat#requestPermissions
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        String city = getCityFromLocation(latitude, longitude);
+
+                        // Search the city on Google
+                        String query = "https://www.google.com/search?q=" + city;
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(query));
+                        startActivity(intent);
+                    }
+                });
+    }
+
+    private String getCityFromLocation(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(this);
+        String city = "";
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses.size() > 0) {
+                city = addresses.get(0).getLocality();
+                // You can also retrieve more information like country, postal code, etc. from the Address object
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return city;
     }
 
 
