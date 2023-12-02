@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,9 +18,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     public ArrayList<String> list;
     private Database db;
+    public Button deleteItemButton;
 
-    public CustomAdapter(ArrayList<String> list) {
-        this.list = list;
+    public CustomAdapter(ArrayList<String> list, Database db) {
+        this.list = list; this.db = db;
     }
 
     @Override
@@ -58,11 +60,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             stepsTextView = (TextView) itemView.findViewById(R.id.stepsEntry);
             sessionTitle = (TextView) itemView.findViewById(R.id.sessionTitleEntry);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            deleteItemButton = itemView.findViewById(R.id.delete_button);
+
+            // Set a click listener on the delete button
+            deleteItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getAdapterPosition());
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        // Notify the listener and pass the position
+                        listener.onDeleteItemClick(position);
                     }
                 }
             });
@@ -71,7 +78,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onDeleteItemClick(int position);
     }
 
     private OnItemClickListener listener;
@@ -88,5 +95,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         list.remove(position);
         notifyItemRemoved(position);
         db.deleteData(location);
+    }
+
+    public void updateDataSet(ArrayList<String> newList) {
+        list.clear();
+        list.addAll(newList);
+        notifyDataSetChanged();
     }
 }
