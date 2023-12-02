@@ -111,9 +111,9 @@ public class ViewLogsActivity extends Activity {
         // Query the database for logs at the specified location
         ArrayList<String> filteredList = db.queryLogs(location);
 
-        // Update the RecyclerView with the filtered list
-        customAdapter.updateDataSet(filteredList);
-        customAdapter.notifyDataSetChanged();
+        Intent intent = new Intent(ViewLogsActivity.this, QueryResultsActivity.class);
+        intent.putStringArrayListExtra("searchResults", filteredList);
+        startActivity(intent);
     }
 
 }
