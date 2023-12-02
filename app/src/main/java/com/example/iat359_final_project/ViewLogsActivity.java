@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,15 @@ public class ViewLogsActivity extends Activity {
 
         db = new Database(this);
         helper = new DatabaseHelper(this);
+
+        Button btnDeleteAll = findViewById(R.id.btnDeleteAll);
+        btnDeleteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAllLogs();
+                customAdapter.notifyDataSetChanged();
+            }
+        });
 
         Cursor cursor = db.getData();
 
@@ -56,5 +66,22 @@ public class ViewLogsActivity extends Activity {
 
         mLayoutManager = new LinearLayoutManager(this);
         myRecycler.setLayoutManager(mLayoutManager);
+
+        customAdapter.setOnItemClickListener(new CustomAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                db.deleteData(String.valueOf(position));
+                // Use 'position' to get the ID or data of the clicked item
+                // For example, deleteRecord(position);
+            }
+        });
+
     }
+
+    private void deleteAllLogs() {
+        // Assuming 'db' is an instance of your Database class
+        db.deleteAllRecords();
+        // Optionally, update your UI here (e.g., refresh the RecyclerView)
+    }
+
 }

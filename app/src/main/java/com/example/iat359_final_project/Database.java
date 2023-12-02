@@ -20,16 +20,6 @@ public class Database {
         helper = new DatabaseHelper(context);
     }
 
-//    public long insertData (String location, String steps) // to insert data
-//    {
-//        db = helper.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(Constants.LOCATION, location);
-//        contentValues.put(Constants.STEPS_AMOUNT, steps);
-//        long id = db.insert(Constants.TABLE_NAME, null, contentValues);
-//        return id;
-//    }
-
     public long insertData (String location, String steps, String sessionTitle) // to insert data
     {
         db = helper.getWritableDatabase();
@@ -86,8 +76,14 @@ public class Database {
     }
 
     public void deleteData(String location) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        db.delete(Constants.TABLE_NAME, Constants.LOCATION + "=?", new String[]{location});
+        db = helper.getWritableDatabase();
+        db.delete(Constants.TABLE_NAME, Constants.SESSION_TITLE + "=?", new String[]{location});
+        db.close();
+    }
+
+    public void deleteAllRecords() {
+        db = helper.getWritableDatabase();
+        db.delete(Constants.TABLE_NAME, null, null);
         db.close();
     }
 
