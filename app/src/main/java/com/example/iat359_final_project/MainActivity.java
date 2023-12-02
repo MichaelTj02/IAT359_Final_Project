@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button btnLocInfo = findViewById(R.id.btnViewInformation);
 
 //        sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
-//
-//        stepCounterTextView = (TextView) findViewById(R.id.stepCounterText);
 
         db = new Database(this);
 
@@ -137,21 +135,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
-//                    MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
-//        }
-//
-//        // Ask user permission for speech recognition
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.RECORD_AUDIO},
-//                    MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
-//        }
-
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
@@ -211,11 +194,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    protected void updateStepCountDisplay(int totalSteps) { // update text based on steps
-        stepCounterTextView.setText(String.valueOf(totalSteps));
-        System.out.println(totalSteps);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -267,15 +245,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
             // Other cases for additional permissions if needed
         }
-    }
-
-    private int getCurrentSteps() {
-        return totalSteps;
-    }
-
-    private void resetSteps() {
-        totalSteps = 0;
-        finalTotalSteps = 0;
     }
 
     private void performWebSearch() {
