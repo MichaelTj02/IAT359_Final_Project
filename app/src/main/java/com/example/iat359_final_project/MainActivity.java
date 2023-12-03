@@ -222,9 +222,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         sensorManager.unregisterListener(stepListener);
 
-        if (speechRecognizer != null) {
-            speechRecognizer.stopListening();
-        }
+        speechRecognizer.stopListening();
+//        if (speechRecognizer != null) {
+//
+//        }
     }
 
     @Override

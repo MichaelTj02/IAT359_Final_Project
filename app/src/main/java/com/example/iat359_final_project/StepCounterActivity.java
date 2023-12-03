@@ -23,6 +23,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,6 +61,8 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     private Database db;
     private Polyline currentPolyline;
     private List<LatLng> pathCoordinates = new ArrayList<>();
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
 
 
     @Override
@@ -79,6 +84,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         db = new Database(this);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -140,6 +146,8 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
             stepOffset = 0; // Reset the step offset
             sensorManager.registerListener(stepListener, stepCounter, SensorManager.SENSOR_DELAY_UI);
         }
+
+        startLocationUpdates();
     }
 
     @Override
@@ -148,6 +156,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         // unregister listener when activity is onPause
         sensorManager.unregisterListener(stepListener);
         mapView.onPause();
+
     }
 
     @Override
@@ -242,7 +251,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
                     currentPolyline = mMap.addPolyline(new PolylineOptions()
                             .addAll(pathCoordinates)
                             .width(12)
-                            .color(Color.BLUE)
+                            .color(Color.RED)
                             .geodesic(true));
                 }
             }
@@ -253,6 +262,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        stopLocationUpdates();
     }
 
     @Override
@@ -327,6 +337,55 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
         }
 
         return city;
+    }
+
+
+    // Method to stop location updates
+    private void stopLocationUpdates() {
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
+    // Create a LocationRequest for location updates
+    private LocationRequest getLocationRequest() {
+        return LocationRequest.create()
+                .setInterval(5000) // Update interval in milliseconds (e.g., every 5 seconds)
+                .setFastestInterval(2000) // Fastest update interval
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    // Method to update the path on the map
+    private void updatePathOnMap() {
+        if (mMap != null && !pathCoordinates.isEmpty()) {
+            if (currentPolyline != null) {
+                currentPolyline.remove(); // Remove the existing line before adding a new segment
+            }
+            currentPolyline = mMap.addPolyline(new PolylineOptions()
+                    .addAll(pathCoordinates)
+                    .width(12)
+                    .color(Color.RED)
+                    .geodesic(true));
+        }
+    }
+
+    // This method will receive location updates and update the path
+    private void startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(@NonNull LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    if (locationResult.getLastLocation() != null) {
+                        LatLng updatedLatLng = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
+                        pathCoordinates.add(updatedLatLng);
+                        updatePathOnMap();
+                    }
+                }
+            };
+
+            fusedLocationClient.requestLocationUpdates(getLocationRequest(), locationCallback, null);
+        }
     }
 
 
