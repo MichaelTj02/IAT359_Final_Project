@@ -47,10 +47,11 @@ public class Database {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         // Define the columns to retrieve
-        String[] columns = {Constants.SESSION_TITLE, Constants.LOCATION, Constants.STEPS_AMOUNT};
+        String[] columns = {Constants.SESSION_TITLE, Constants.STEPS_AMOUNT, Constants.LOCATION,};
 
         // Prepare the selection clause for a case-insensitive search
-        String selection = Constants.LOCATION + " LIKE ?";
+        // steps_amount = search for location, this is VERY WEIRD, but it works so yehehehehe
+        String selection = Constants.STEPS_AMOUNT + " LIKE ?";
 
         // Use lower() function for case-insensitive search and handle null location input
         location = location != null ? "%" + location.toLowerCase() + "%" : "%%";
