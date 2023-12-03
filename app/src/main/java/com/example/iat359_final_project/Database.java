@@ -10,6 +10,7 @@ import com.example.iat359_final_project.Constants;
 import com.example.iat359_final_project.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Database {
     private SQLiteDatabase db;
@@ -45,29 +46,39 @@ public class Database {
     public ArrayList<String> queryLogs(String location) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
+        // Define the columns to retrieve
         String[] columns = {Constants.SESSION_TITLE, Constants.LOCATION, Constants.STEPS_AMOUNT};
-        String selection = Constants.LOCATION + "= ?";
 
+        // Prepare the selection clause for a case-insensitive search
+        String selection = Constants.LOCATION + " LIKE ?";
+
+        // Use lower() function for case-insensitive search and handle null location input
+        location = location != null ? "%" + location.toLowerCase() + "%" : "%%";
+
+        // Perform the query
         Cursor cursor = db.query(Constants.TABLE_NAME, columns, selection, new String[]{location}, null, null, null);
 
         ArrayList<String> resultList = new ArrayList<>();
 
-        int titleIndex = cursor.getColumnIndex(Constants.SESSION_TITLE);
-        int locationIndex = cursor.getColumnIndex(Constants.LOCATION);
-        int stepsIndex = cursor.getColumnIndex(Constants.STEPS_AMOUNT);
+        // Check if the cursor is not null and has data
+        if (cursor != null && cursor.moveToFirst()) {
+            int titleIndex = cursor.getColumnIndex(Constants.SESSION_TITLE);
+            int locationIndex = cursor.getColumnIndex(Constants.LOCATION);
+            int stepsIndex = cursor.getColumnIndex(Constants.STEPS_AMOUNT);
 
-        while (cursor.moveToNext()) {
-            String sessionTitle = cursor.getString(titleIndex);
-            String logLocation = cursor.getString(locationIndex);
-            String stepsAmount = cursor.getString(stepsIndex);
-            resultList.add(sessionTitle + "," + logLocation + "," + stepsAmount);
+            // Iterate over the cursor to build the result list
+            do {
+                String sessionTitle = cursor.getString(titleIndex);
+                String logLocation = cursor.getString(locationIndex);
+                String stepsAmount = cursor.getString(stepsIndex);
+                resultList.add(sessionTitle + "," + logLocation + "," + stepsAmount);
+            } while (cursor.moveToNext());
+
+            cursor.close();
         }
 
-        cursor.close();
         return resultList;
     }
-
-
 
     public void deleteData(String location) {
         db = helper.getWritableDatabase();

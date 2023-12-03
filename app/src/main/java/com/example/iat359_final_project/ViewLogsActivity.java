@@ -87,7 +87,8 @@ public class ViewLogsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String locationQuery = searchEditText.getText().toString();
-                queryLogsByLocation(locationQuery);
+                ArrayList<String> filteredList = db.queryLogs(locationQuery);
+                updateRecyclerView(filteredList);
             }
         });
     }
@@ -106,6 +107,16 @@ public class ViewLogsActivity extends Activity {
         // Optionally, display a message to the user
         Toast.makeText(this, "All logs deleted", Toast.LENGTH_SHORT).show();
     }
+
+    private void updateRecyclerView(ArrayList<String> newList) {
+        if (newList.isEmpty()) {
+            Toast.makeText(ViewLogsActivity.this, "No logs found for this location", Toast.LENGTH_SHORT).show();
+        } else {
+            customAdapter.updateDataSet(newList);
+            customAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     private void queryLogsByLocation(String location) {
         // Query the database for logs at the specified location
