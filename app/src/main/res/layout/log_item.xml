@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
-    android:id="@+id/listLayout">
+    android:id="@+id/listLayout"
+    android:background="#313639" >
 
     <!-- Session Title -->
     <TextView
