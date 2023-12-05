@@ -4,17 +4,37 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#313639" >
+
+    <TextView
+        android:id="@+id/appNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TraveLogger"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:textColor="#EADFBE"
+        android:textSize="50dp"/>
+
+    <TextView
+        android:id="@+id/appSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#E68600"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:text="Explore. Record. Relive" />
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="500dp"
         android:columnCount="2"
         android:rowCount="2"
         android:padding="16dp"
+        android:layout_marginTop="50dp"
         android:alignmentMode="alignMargins"
         android:columnOrderPreserved="false"
         android:rowOrderPreserved="false">
