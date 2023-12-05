@@ -61,6 +61,7 @@
             android:layout_weight="0"
             android:background="@drawable/button_rounded_background"
             android:layout_marginLeft="10dp"
+            android:textColor="#FFF"
             android:text="Delete" />
     </LinearLayout>
 </LinearLayout>

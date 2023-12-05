@@ -38,6 +38,8 @@
         android:id="@+id/btnFinish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_rounded_background"
+        android:textColor="#FFF"
         android:text="Finish Session"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp" />
