@@ -3,8 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp"
-    android:background="#313639" ><!-- Assuming a white background -->>
+    android:background="#313639" >
+
+    <TextView
+        android:id="@+id/appNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TraveLogger"
+        android:gravity="center"
+        android:textColor="#EADFBE"
+        android:textSize="50dp"/>
+
+    <TextView
+        android:id="@+id/appSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#E68600"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:text="Explore. Record. Relive" />
 
     <EditText
         android:id="@+id/editTextUserLogin"
@@ -13,7 +32,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/edittext_rounded_background"
         android:paddingLeft="16dp"
-        android:hint="Email"
+        android:hint="Username"
         android:inputType="text" />
 
     <EditText

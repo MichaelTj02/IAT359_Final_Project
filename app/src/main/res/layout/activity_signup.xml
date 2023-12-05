@@ -3,32 +3,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#313639" >
+
+    <TextView
+        android:id="@+id/appNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TraveLogger"
+        android:gravity="center"
+        android:textColor="#EADFBE"
+        android:textSize="50dp"/>
+
+    <TextView
+        android:id="@+id/appSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#E68600"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:text="Explore. Record. Relive" />
 
     <EditText
         android:id="@+id/editTextUsername"
-        android:layout_width="320dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginTop="50dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:background="@drawable/edittext_rounded_background"
+        android:paddingLeft="16dp"
         android:hint="Username"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_rounded_background"
+        android:paddingLeft="16dp"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textVisiblePassword" />
 
     <Button
         android:id="@+id/signupButton"
-        android:layout_width="130dp"
-        android:layout_gravity="center"
-        android:layout_height="50dp"
-        android:layout_marginTop="50dp"
-        android:text="Sign Up" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_rounded_background"
+        android:text="Sign Up"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>
