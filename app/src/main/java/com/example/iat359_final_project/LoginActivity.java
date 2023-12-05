@@ -32,10 +32,12 @@ public class LoginActivity extends AppCompatActivity {
             requestAudioPermission();
         }
 
+        // get shared preference data
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         usernameEditText = findViewById(R.id.editTextUserLogin);
         passwordEditText = findViewById(R.id.editTextPassLogin);
 
+        // login button click listener
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> loginUser());
 
@@ -48,11 +50,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkAudioPermission() {
+        // check permission for voice command
         return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestAudioPermission() {
+        // request audio command permission
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
@@ -60,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // check if permission is granted
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == MY_PERMISSIONS_REQUEST_RECORD_AUDIO) {
@@ -74,18 +79,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
+        // get existing username and password data from shared preferences
         SharedPreferences sharedPrefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String username = sharedPrefs.getString("username", DEFAULT);
         String password = sharedPrefs.getString("password", DEFAULT);
 
         if (usernameEditText.getText().toString().equals(username) && passwordEditText.getText().toString().equals(password))
         {
+            // if there username and password correct, login
             Toast.makeText(this, "Login Success", Toast.LENGTH_LONG).show();
             Intent intent= new Intent(this, MainActivity.class);
             startActivity(intent);
         }
         else
         {
+            // if username and password are wrong, set it to default and bring user to sign up activity
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString("username", DEFAULT);
             editor.putString("password", DEFAULT);

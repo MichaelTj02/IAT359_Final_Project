@@ -82,12 +82,14 @@ public class Database {
     }
 
     public void deleteData(String location) {
+        // delete one log item from the database
         db = helper.getWritableDatabase();
         db.delete(Constants.TABLE_NAME, Constants.SESSION_TITLE + "=?", new String[]{location});
         db.close();
     }
 
     public void deleteAllRecords() {
+        // delete all logs in database
         db = helper.getWritableDatabase();
         db.delete(Constants.TABLE_NAME, null, null);
         db.close();

@@ -64,10 +64,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ImageButton btnStartSession = findViewById(R.id.btnStartSession);
         ImageButton btnLocInfo = findViewById(R.id.btnViewInformation);
 
-//        sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
-
         db = new Database(this);
 
+        // initialize step counter sensor
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (sensorManager != null) {
             stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
                 MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
 
-// For Record Audio
+        // For Record Audio
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
@@ -208,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onDestroy() {
+        // destroy speechRecognizer when app is destroyed
         super.onDestroy();
         if (speechRecognizer != null) {
             speechRecognizer.destroy();
@@ -250,9 +250,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void performWebSearch() {
+        // implicit intent to find more information about the weather
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling ActivityCompat#requestPermissions
+
             return;
         }
         fusedLocationClient.getLastLocation()
@@ -272,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private String getCityFromLocation(double latitude, double longitude) {
+        // get current city user is in
         Geocoder geocoder = new Geocoder(this);
         String city = "";
 
@@ -290,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private void startVoiceRecognition() {
+        // start voice recognition
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak something");
@@ -297,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void startListening() {
+        // listen to what users are saying
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak something");

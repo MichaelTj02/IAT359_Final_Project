@@ -26,6 +26,7 @@ public class SignupActivity extends AppCompatActivity  {
         usernameEditText = findViewById(R.id.editTextUsername);
         passwordEditText = findViewById(R.id.editTextPassword);
 
+        // initialize shared prefs
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("username", DEFAULT);
         String password = sharedPreferences.getString("password", DEFAULT);

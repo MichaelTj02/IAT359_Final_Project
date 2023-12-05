@@ -44,11 +44,16 @@
         android:id="@+id/textViewLogsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Your Travel Logs"
-        android:textSize="20sp"
+        android:text="Your Session History"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="#FFFF"
+        android:textColor="#FFF"
         android:paddingBottom="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E68600" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewLogs"
