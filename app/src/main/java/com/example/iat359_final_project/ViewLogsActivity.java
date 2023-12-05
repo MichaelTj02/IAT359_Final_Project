@@ -34,6 +34,7 @@ public class ViewLogsActivity extends Activity {
         db = new Database(this);
         helper = new DatabaseHelper(this);
 
+        // delete all button to delete all logs in the database
         Button btnDeleteAll = findViewById(R.id.btnDeleteAll);
         btnDeleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +61,7 @@ public class ViewLogsActivity extends Activity {
             cursor.moveToNext();
         }
 
+        // lines of codes for query
         ArrayList<String> queryResults = getIntent().getStringArrayListExtra("queryResults");
 
         if(queryResults != null){
@@ -79,7 +81,7 @@ public class ViewLogsActivity extends Activity {
             }
         });
 
-        // for query
+        // search button for query
         searchEditText = findViewById(R.id.searchEditText);
         searchButton = findViewById(R.id.searchButton);
 
@@ -94,7 +96,7 @@ public class ViewLogsActivity extends Activity {
     }
 
     private void deleteAllLogs() {
-        // Assuming 'db' is an instance of your Database class
+        // delete all available logs
         db.deleteAllRecords();
 
         // Clear the data set used by the adapter
@@ -104,27 +106,18 @@ public class ViewLogsActivity extends Activity {
         // Notify the adapter to refresh the RecyclerView
         customAdapter.notifyDataSetChanged();
 
-        // Optionally, display a message to the user
+        // Show user data has been deleted
         Toast.makeText(this, "All logs deleted", Toast.LENGTH_SHORT).show();
     }
 
     private void updateRecyclerView(ArrayList<String> newList) {
+        // update recycler view for query search
         if (newList.isEmpty()) {
             Toast.makeText(ViewLogsActivity.this, "No logs found for this location", Toast.LENGTH_SHORT).show();
         } else {
             customAdapter.updateDataSet(newList);
             customAdapter.notifyDataSetChanged();
         }
-    }
-
-
-    private void queryLogsByLocation(String location) {
-        // Query the database for logs at the specified location
-        ArrayList<String> filteredList = db.queryLogs(location);
-
-        // Update the RecyclerView with the filtered list
-        customAdapter.updateDataSet(filteredList);
-        customAdapter.notifyDataSetChanged();
     }
 
 }

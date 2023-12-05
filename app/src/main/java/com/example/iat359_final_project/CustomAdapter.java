@@ -45,7 +45,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public int getItemCount() {
         return list.size();
-    }
+    } // get amount of item available in the view
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -98,6 +98,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     public void updateDataSet(ArrayList<String> newList) {
+        // update database when item is deleted
         list.clear();
         list.addAll(newList);
         notifyDataSetChanged();

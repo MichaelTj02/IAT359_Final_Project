@@ -55,4 +55,13 @@
         android:textStyle="bold"
         android:textColor="#FFFFFF" />
 
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:text="Have an account? Login"
+        android:textColor="#FFFFFF" />
+
 </LinearLayout>

@@ -13,35 +13,52 @@
         android:layout_height="400dp" />
 
     <!-- TextView to display step count -->
-    <TextView
-        android:id="@+id/stepCounterText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Steps: 0"
-        android:textColor="#FFF"
-        android:textSize="18sp"
-        android:padding="16dp" />
-
-    <!-- EditText for session title -->
-    <EditText
-        android:id="@+id/sessionTitleEditText"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter session title"
-        android:background="@drawable/edittext_rounded_background"
-        android:padding="16dp"
-        android:layout_margin="10dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- Button to finish the session -->
-    <Button
-        android:id="@+id/btnFinish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_rounded_background"
-        android:textColor="#FFF"
-        android:text="Finish Session"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        <TextView
+            android:id="@+id/stepCounterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Step Count: 0 steps"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="#FFF"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/sessionTitleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_rounded_background"
+            android:hint="Enter session title"
+            android:padding="16dp" />
+
+        <Button
+            android:id="@+id/btnFinish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_rounded_background"
+            android:text="Finish Session"
+            android:textColor="#FFF" />
+
+        <TextView
+            android:id="@+id/appNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TraveLogger"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textColor="#EADFBE"
+            android:textSize="30dp"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.iat359_final_project;
 
 public class Constants {
+    // constants class for database
     public static final String DATABASE_NAME = "travel_logs.db";
     public static final String TABLE_NAME = "sessions_log";
     public static final String UID = "_id";

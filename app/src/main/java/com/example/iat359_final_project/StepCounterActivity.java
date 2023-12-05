@@ -103,7 +103,7 @@ public class StepCounterActivity extends AppCompatActivity implements SensorEven
                         }
                         // Calculate current steps since the button was pressed
                         int currentSteps = (int) event.values[0] - stepOffset;
-                        stepCounterTextView.setText("Steps: " + currentSteps);
+                        stepCounterTextView.setText("Step Count: " + currentSteps + " " + "steps");
                         totalSteps = currentSteps;
                     }
                 }

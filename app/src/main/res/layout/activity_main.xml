@@ -49,7 +49,7 @@
             android:scaleType="fitCenter"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
-            android:layout_gravity="fill"/>
+            android:layout_gravity="fill" />
 
         <!-- View Map ImageButton -->
         <ImageButton
