@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
+    private TextView signUpText;
     private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 2;
     private SharedPreferences sharedPreferences;
     public static final String DEFAULT = "not available";
@@ -37,7 +39,12 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> loginUser());
 
-
+        signUpText = findViewById(R.id.signUpText);
+        signUpText.setOnClickListener(v -> {
+            // Start the SignupActivity when the text is clicked
+            Intent signUpIntent = new Intent(LoginActivity.this, SignupActivity.class);
+            startActivity(signUpIntent);
+        });
     }
 
     private boolean checkAudioPermission() {

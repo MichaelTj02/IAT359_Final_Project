@@ -3,32 +3,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#313639" ><!-- Assuming a white background -->>
 
     <EditText
         android:id="@+id/editTextUserLogin"
-        android:layout_width="320dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginTop="50dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:hint="Username"
+        android:background="@drawable/edittext_rounded_background"
+        android:paddingLeft="16dp"
+        android:hint="Email"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextPassLogin"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_rounded_background"
+        android:paddingLeft="16dp"
         android:hint="Password"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="130dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_rounded_background"
+        android:text="Login"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/signUpText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_gravity="center"
-        android:layout_height="50dp"
-        android:layout_marginTop="50dp"
-        android:text="Login" />
+        android:text="Don't have an account? Sign Up"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>
