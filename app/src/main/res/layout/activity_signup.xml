@@ -33,6 +33,7 @@
         android:background="@drawable/edittext_rounded_background"
         android:paddingLeft="16dp"
         android:hint="Username"
+        android:textColor="#000000"
         android:inputType="text" />
 
     <EditText
@@ -43,6 +44,7 @@
         android:background="@drawable/edittext_rounded_background"
         android:paddingLeft="16dp"
         android:hint="Password"
+        android:textColor="#000000"
         android:inputType="textVisiblePassword" />
 
     <Button
