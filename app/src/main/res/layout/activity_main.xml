@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -27,7 +25,7 @@
         android:textSize="16dp"
         android:text="Explore. Record. Relive" />
 
-    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <GridLayout
         android:id="@+id/gridLayout"
         android:layout_width="match_parent"
         android:layout_height="500dp"
@@ -39,54 +37,58 @@
         android:columnOrderPreserved="false"
         android:rowOrderPreserved="false">
 
-        <!-- Check Logs Button -->
-        <Button
+        <!-- Check Logs ImageButton -->
+        <ImageButton
             android:id="@+id/btnCheckLogs"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:padding="0dp"
             android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Check Logs"
-            android:background="@drawable/rounded_rectangle_button"
+            android:background="@android:color/transparent"
+            android:src="@drawable/logs"
+            android:scaleType="fitCenter"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_gravity="fill"/>
 
-        <!-- View Map Button -->
-        <Button
+        <!-- View Map ImageButton -->
+        <ImageButton
             android:id="@+id/btnViewMap"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:padding="0dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="View Map"
-            android:background="@drawable/rounded_rectangle_button"
+            android:background="@android:color/transparent"
+            android:src="@drawable/maps"
+            android:scaleType="fitCenter"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_gravity="fill"/>
 
-        <!-- View Information Button -->
-        <Button
+        <!-- View Information ImageButton -->
+        <ImageButton
             android:id="@+id/btnViewInformation"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:padding="0dp"
             android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:text="View Weather Information"
-            android:background="@drawable/rounded_rectangle_button"
+            android:background="@android:color/transparent"
+            android:src="@drawable/info"
+            android:scaleType="fitCenter"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_gravity="fill"/>
 
-        <!-- Start Session Button -->
-        <Button
+        <!-- Start Session ImageButton -->
+        <ImageButton
             android:id="@+id/btnStartSession"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:padding="0dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:text="Start Session"
-            android:background="@drawable/rounded_rectangle_button"
+            android:background="@android:color/transparent"
+            android:src="@drawable/start"
+            android:scaleType="fitCenter"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_gravity="fill"/>

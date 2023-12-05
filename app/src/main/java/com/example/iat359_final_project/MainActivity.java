@@ -24,6 +24,7 @@ import android.Manifest;
 
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnCheckLogs = findViewById(R.id.btnCheckLogs);
-        Button btnViewMap = findViewById(R.id.btnViewMap);
-        Button btnStartSession = findViewById(R.id.btnStartSession);
-        Button btnLocInfo = findViewById(R.id.btnViewInformation);
+        ImageButton btnCheckLogs = findViewById(R.id.btnCheckLogs);
+        ImageButton btnViewMap = findViewById(R.id.btnViewMap);
+        ImageButton btnStartSession = findViewById(R.id.btnStartSession);
+        ImageButton btnLocInfo = findViewById(R.id.btnViewInformation);
 
 //        sessionTitleEditText = findViewById(R.id.sessionTitleEditText);
 
