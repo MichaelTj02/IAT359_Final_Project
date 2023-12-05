@@ -36,8 +36,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
         String[]  results = (list.get(position).toString()).split(",");
         holder.sessionTitle.setText(results[1]);
-        holder.locationTextView.setText(results[0]);
-        holder.stepsTextView.setText(results[2]);
+        holder.locationTextView.setText(results[2]);
+        holder.stepsTextView.setText(results[0]);
 
     }
 
