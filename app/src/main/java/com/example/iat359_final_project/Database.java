@@ -51,7 +51,7 @@ public class Database {
 
         // Prepare the selection clause for a case-insensitive search
         // steps_amount = search for location, this is VERY WEIRD, but it works so yehehehehe
-        String selection = Constants.STEPS_AMOUNT + " LIKE ?";
+        String selection = Constants.LOCATION + " LIKE ?";
 
         // Use lower() function for case-insensitive search and handle null location input
         location = location != null ? "%" + location.toLowerCase() + "%" : "%%";
